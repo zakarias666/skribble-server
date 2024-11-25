@@ -3,10 +3,10 @@ const WebSocket = require('ws');
 const cors = require('cors');
 
 const corsOptions = {
-    origin: 'https://zakarias666.github.io', // Erstat med din faktiske GitHub Pages URL
+    origin: 'https://zakarias666.github.io',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
-    credentials: true, // Hvis du bruger cookies eller autentificering
+    credentials: true,
 };
 
 const app = express();
@@ -55,10 +55,8 @@ function startNextPlayer(roomIndex) {
         return;
     }
 
-    // Fjern brush fra den nuværende spiller
     room.players.forEach((player) => (player.brush = false));
 
-    // Find næste spiller
     room.currentPlayerIndex =
         (room.currentPlayerIndex + 1) % room.players.length;
 
@@ -88,15 +86,13 @@ function startNextPlayer(roomIndex) {
     // Send opdateringer til alle spillere i rummet
     room.players.forEach((player) => {
         if (player.socket.readyState === WebSocket.OPEN) {
-            // Send ord til den spiller, der skal tegne
             player.socket.send(
                 JSON.stringify({
                     
-                    data: player.brush ? word : null, // Kun spilleren med brush får ordet
+                    data: player.brush ? word : null,
                 })
             );
 
-            // Ryd tegnebrættet
             player.socket.send(
                 JSON.stringify({
                     type: 'drawdata',
@@ -104,7 +100,6 @@ function startNextPlayer(roomIndex) {
                 })
             );
 
-            // Ryd chatten
             player.socket.send(
                 JSON.stringify({
                     type: 'chatdata',
@@ -130,7 +125,6 @@ function startNextPlayer(roomIndex) {
         }
     });
 
-    // Skift til næste spiller efter 30 sekunder
     clearTimeout(room.timer);
     room.timer = setTimeout(() => startNextPlayer(roomIndex), 30000);
 }
@@ -148,8 +142,8 @@ wss.on('connection', (socket) => {
             score,
             brush,
         })),
-        currentWord: room.currentWord, // Inkluder currentWord
-        currentPlayerIndex: room.currentPlayerIndex, // Inkluder currentPlayerIndex
+        currentWord: room.currentWord,
+        currentPlayerIndex: room.currentPlayerIndex,
     }));
     
     socket.send(JSON.stringify({ type: 'roomdata', data: sanitizedRoomData }));
@@ -207,7 +201,7 @@ wss.on('connection', (socket) => {
         
                     // Skift til næste spiller
                     startNextPlayer(roomIndex);
-                    return; // Stop yderligere behandling
+                    return; 
                 }
         
                 // Send beskeden til alle spillere i rummet
