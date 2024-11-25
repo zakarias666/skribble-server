@@ -17,6 +17,7 @@ const wss = new WebSocket.Server({ server });
 let players = [];
 const rooms = 10;
 const roomMax = 2;
+const roundTime = 30000;
 let roomData = Array.from({ length: rooms }, () => ({
     players: [],
     status: 'open'
@@ -126,14 +127,13 @@ function startNextPlayer(roomIndex) {
     });
 
     clearTimeout(room.timer);
-    room.timer = setTimeout(() => startNextPlayer(roomIndex), 30000);
-}
-;
-
+    room.timer = setTimeout(() => startNextPlayer(roomIndex), roundTime);
+};
 
 wss.on('connection', (socket) => {
     socket.send(JSON.stringify({ type: 'roomcount', data: rooms }));
     socket.send(JSON.stringify({ type: 'roommax', data: roomMax }));
+    socket.send(JSON.stringify({ type: 'roundtime', data: roundTime }));
     const sanitizedRoomData = roomData.map((room) => ({
         ...room,
         timer: undefined,
@@ -350,10 +350,8 @@ wss.on('connection', (socket) => {
 
         updateRooms();
     });
-
-    
 });
 
 server.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+    console.log('Server started :)');
 });
