@@ -1,0 +1,14 @@
+# Node modules
+node_modules/
+
+# Miljøvariabler
+.env
+
+# Logfiler
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specifikke filer
+.DS_Store
+Thumbs.db
